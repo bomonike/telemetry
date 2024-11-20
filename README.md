@@ -1,6 +1,6 @@
 Here is a sample implementation of a telemetry system using open-source components.
 
-Last change: "v002 fix sample python indents :README.md"
+Last change: "v003 + bindplane :README.md"
 
 Telemetry is the process of collecting and transmitting “raw” data (as signals from remote sources).
 
@@ -23,7 +23,7 @@ This repo was created so that a full-featured system for collecting and analyzin
    * Telemetry from robots running ROS2
    * Telemetry from wrist bands built from a micro:bit
 
-REFERENCE: “Telemetry” is not a topic listed per se in Arvix.org. However, related topics in Computer Science are: Databases, Performance, Numerical Analysis, Systems and Control, etc.
+REFERENCES: “Telemetry” is not a topic listed per se in Arvix.org. However, related topics in Computer Science are: Databases, Performance, Numerical Analysis, Systems and Control, etc.
 
 ## System components
 
@@ -33,7 +33,10 @@ Open source services are used:
 
 * Logs are sent to the OpenSearch collector
 * Metrics are sent to the Prometheus collector
-* Traces containing OpenTelemetry (otel) instrumentation emitted from a sample Python programs are sent to a Jaeger collector
+* Traces containing OpenTelemetry (OTel) instrumentation emitted from a sample Python programs are sent to a Jaeger collector
+
+Since handling and storing emissions from every activity at high volume can be very costly, a cloud-based <a target="_blank" href="https://observiq.com/">observiq.com</a> can be the initial capture point to filter data in a dynamic, intelligent way before forwarding them.
+<img alt="telemetry-bindplane.png" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1732138027/telemetry-bindplane_cwn96y.webp" />
 
 <hr />
 
@@ -129,7 +132,11 @@ class SystemObservability:
 
 By themselves, Monitoring data lacks the full context needed for efficient troubleshooting.
 
-Monitoring is more effective for troubleshooting when they are correlated to Traces. Illustration of a sample span of the do_roll function within the rolldice class used by a GET call:
+Monitoring is more effective for troubleshooting when they are correlated to Traces. 
+
+<img alt="telemetry-flow-604x405.png" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1732092863/otel-span_iozoay.png" />
+
+The above illustrates how a GET call in one service results in execution on another service the do_roll function within the rolldice class.
 
 Beyond this, Traces typically span several system components to tell the story of how events occurring within a system flow are behaving based on custom attributes (additional information) captured along within trace data.
 
@@ -179,7 +186,35 @@ Creation of shims or low-level bytecode agents for automatic instrumentation wit
 REFERENCE: https://learning.oreilly.com/videos/fundamentals-of-observability/0636920926597/0636920926597-video357736/
 
 
-## Dynamic Tracing
+## Deeper Dive into OpenTelemetry (OTel)
+
+<a target="_blank" href="https://www.linkedin.com/in/ryangoins/">Ryan Goins</a>, Product Manager at https://observiq.com/
+created a <a target="_blank" href="https://www.youtube.com/watch?v=JmO2jyhLjxc&list=PLdtG-L_eQ9Mx2yTfD2kEuN-zys8AJJ3s-">series</a> of explainer videos about Otel in 2024:
+1. <a target="_blank" href="https://www.youtube.com/watch?v=JmO2jyhLjxc&t=4m5s">OpenTelemetry 101</a> with CEO Michael Kelly:
+   1. 5:47 Agenda
+   1. 06:21 What is OpenTelemetry
+   1. 7:56 Why use OpenTelemetry
+   1. 9:47 Stability of Signals
+   1. 11:19 OpenTelemetry in Production Overview
+   1. 12:27 Getting Started
+   1. 15:56 Choosing your Collector Distribution
+   1. 22:57 Deployment Patterns
+   1. 28:58 Migration Strategies
+   1. 29:55 OpenTelemetry in Production
+   1. 33:01 Other Considerations
+
+2. <a target="_blank" href="https://www.youtube.com/watch?v=N3bSvnpKiVE">The OpenTelemetry Collector: A Deep Dive</a>
+3. <a target="_blank" href="https://www.youtube.com/watch?v=GNdJAXHW-fI">Building a Custom OTel Collector: A Step-by-Step Guide</a>
+4. <a target="_blank" href="https://www.youtube.com/watch?v=M1aitc50W18">Constructing an Observability Pipeline with OpenTelemetry</a>
+5. <a target="_blank" href="https://www.youtube.com/watch?v=h0b8i24k240">Managing High Volume with OpenTelemetry</a>
+6. <a target="_blank" href="https://www.youtube.com/watch?v=gNpaCePcPak">Instrumenting your Codebase with OpenTelemetry</a>
+7. <a target="_blank" href="https://www.youtube.com/watch?v=B43v6Of5buk&list=PLdtG-L_eQ9Mx2yTfD2kEuN-zys8AJJ3s-&index=7&pp=iAQB">How OTel Empowers You to Handle Unified Data</a>
+8. <a target="_blank" href="https://www.youtube.com/watch?v=BoYyIp_Zgfc&list=PLdtG-L_eQ9Mx2yTfD2kEuN-zys8AJJ3s-&index=8&pp=iAQB">Strategies for Lowering Observability Costs</a>
+
+
+## Dynamic Tracing Decorators
+
+There are two main OpenTelemetry projects: https://opentelemetry.io/ and https://github.com/open-telemetry/opentelemetry-collector
 
 The simplest approach to add code to generate tracing and send it to Collectors is to use Python decorators or Java annotations. Many monitoring systems use this approach to decouple tracing code from the app code.
 
@@ -230,7 +265,8 @@ lists integrations with many LLMs with APIs, accessed from within Google Colab:
 
 1. Download: If you did not Fork the repo:
    ```
-   git clone https://github.com/bomonike/Otel-jaeger && cd Otel-jaeger
+   git clone https://github.com/bomonike/telemetry.git
+   cd telemetry
    ```
 3.  Install dependencies:
 
