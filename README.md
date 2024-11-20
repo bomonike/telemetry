@@ -1,4 +1,6 @@
-Here is a sample implementation of a telemetry using open-source components.
+Here is a sample implementation of a telemetry system using open-source components.
+
+Last change: "v002 fix sample python indents :README.md"
 
 Telemetry is the process of collecting and transmitting “raw” data (as signals from remote sources).
 
@@ -90,10 +92,10 @@ Perhaps this generic Python code would help to illustrate the differences:
 class TelemetryCollector:
 	def collect_metrics(self):
     	return {
-    'cpu_usage': get_cpu_usage(),
-    'memory_usage': get_memory_usage(),
-    'request_duration': get_request_duration(),
-    'error_count': get_error_count()
+         'cpu_usage': get_cpu_usage(),
+         'memory_usage': get_memory_usage(),
+         'request_duration': get_request_duration(),
+         'error_count': get_error_count()
     	}
 
 # Monitoring: Predefined thresholds and alerts:
@@ -101,9 +103,9 @@ class SystemMonitor:
 	def check_system_health(self, metrics):
     	alerts = []
     	if metrics['cpu_usage'] > 80:
-           alerts.append("High CPU usage alert")
+          alerts.append("High CPU usage alert")
     	if metrics['error_count'] > 100:
-    alerts.append("High error rate alert")
+          alerts.append("High error rate alert")
     	return alerts
 
 # Observability: Complex analysis and insights:
@@ -111,16 +113,16 @@ class SystemObservability:
     def analyze_system_behavior(self, metrics, logs, traces):
 
         # Correlate multiple data sources:
- performance_pattern = correlate_metrics_with_traces(metrics, traces)
- error_context = analyze_error_patterns(logs, traces)
- user_impact = assess_user_impact(traces)
-   	 
- # Generate insights:
- return {
-'performance_bottlenecks': identify_bottlenecks(performance_pattern),
-'error_root_causes': determine_root_causes(error_context),
-'user_experience_impact': analyze_user_impact(user_impact)
- }
+         performance_pattern = correlate_metrics_with_traces(metrics, traces)
+         error_context = analyze_error_patterns(logs, traces)
+         user_impact = assess_user_impact(traces)
+               
+         # Generate insights:
+         return {
+            'performance_bottlenecks': identify_bottlenecks(performance_pattern),
+            'error_root_causes': determine_root_causes(error_context),
+            'user_experience_impact': analyze_user_impact(user_impact)
+         }
 ```
 
 ### Tracing to Understand “Why”
@@ -133,135 +135,48 @@ Beyond this, Traces typically span several system components to tell the story o
 
 Observability provides the context for asking novel questions about system behavior during troubleshooting. 
 
+
 <hr />
 
-<a name="Installation"></a>
+## Vendors of Telemetry Utilities
 
-## Installation
+Common for Telemetry data collection from within apps include:
+OpenTelemetry (OTel, see below), StatsD, and Telegraf.
 
-1. Install Docker Desktop client and have it running.
+Common utilities for monitoring data collection include:
+Prometheus, Nagios, Zabbix, Elastic.
 
-2. Download: If you did not Fork the repo:
+Lightstep is a SaaS observability back-end vendor.
 
-git clone https://github.com/bomonike/Otel-jaeger && cd Otel-jaeger
+Common utilities for Observability include:
+Grafana, Jaeger (see below), New Relic, Datadog.
 
-3.  Install dependencies:
+https://last9.io/blog/how-to-use-jaeger-with-opentelemetry/
 
-python3 -m venv venv  # venv is in .gitignore
-source venv/bin/activate
-pip install -r requirements.txt
 
-FIXME:
-ERROR: Could not find a version that satisfies the requirement opentelemetry-exporter-jaeger==1.23.0 (from versions: 0.12b0, 0.13b0, 0.14b0, 0.15b0, 0.16b0, 0.16b1, 0.17b0, 1.0.0rc1, 1.0.0, 1.1.0, 1.2.0, 1.3.0, 1.4.0, 1.4.1, 1.5.0, 1.6.0, 1.6.1, 1.6.2, 1.7.0, 1.7.1, 1.8.0, 1.9.0, 1.9.1, 1.10.0, 1.11.0, 1.11.1, 1.12.0rc1, 1.12.0rc2, 1.12.0, 1.13.0, 1.14.0, 1.15.0, 1.16.0, 1.17.0, 1.18.0, 1.19.0, 1.20.0, 1.21.0)
 
-[notice] A new release of pip is available: 24.2 -> 24.3.1
-[notice] To update, run: pip install --upgrade pip
-ERROR: No matching distribution found for opentelemetry-exporter-jaeger==1.23.0
+## Telemetry APIs
 
-4. Ensure that ports in the command are open.
+New Relic was an early innovator of tracing since the 1990s. They invented a protocol which was proprietary. When other vendors came on the scene, they too provided proprietary API and coding protocols. This made migrations between vendors difficult. Vendor lock-in not only increased costs but also stifled innovation.
 
-docker run -d --name jaeger \
-  -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
-  -p 5775:5775/udp \
-  -p 6831:6831/udp \
-  -p 6832:6832/udp \
-  -p 5778:5778 \
-  -p 16686:16686 \
-  -p 14250:14250 \
-  -p 14268:14268 \
-  -p 14269:14269 \
-  -p 9411:9411 \
-  jaegertracing/all-in-one:1.22
+This inspired the creation of two (competing) standards:
 
-5. Run the above to start Jaeger (using Docker):
+OpenTracing in 2015 by the Cloud Native Computing Foundation
+OpenCensus in 2018 by the Google Open Source Community
 
-FIXME: 
-Status: Downloaded newer image for jaegertracing/all-in-one:1.22
-WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
-46d09c080ab6d9b56e74ec8fc64bf90113591dbc1858aee0af9fae6283e16e48
+In 2019, the projects merged into the OpenTelemetry(OTel) project managed by CNCF to define the “best of both worlds”:
 
-Jaeger stores trace data in scalable backends like Cassandra or Elasticsearch.
+A single standard for obtaining Traces, Metrics, and Logs
+A single set of APIs and language-specific API SDK implementations (Python, Java, .NET, JavaScript, PHP, Go)
 
-6. Run the application:
+A part of the standard defines how data is instrumented and transmitted:
 
-chmod +x app.py
-python app.py
+The OpenTelemetry Protocol (OTLP) specification which describes the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate nodes such as collectors and telemetry backends. See it at https://opentelemetry.io/docs/specs/otlp/ 
 
-7. Test
+Support for both legacy HTTP and real-time gRPC networking protocols
+Creation of shims or low-level bytecode agents for automatic instrumentation without touching app code
 
-Send a test order:
-
-curl -X POST http://localhost:5000/order \
-  -H "Content-Type: application/json" \
-  -d '{
-	"order_id": "12345",
-	"amount": 100.00,
-	"customer_id": "cust_123",
-	"product_id": "prod_456",
-	"quantity": 2,
-	"payment_method": "card",
-	"type": "express"
-  }'
-
-8. Check health endpoint:
-
-curl http://localhost:5000/health
-
-9. Open Jaeger UI to view traces:
-
-http://localhost:16686
-
-9. Select "order_service" from the Service dropdown
-
-Jaeger provides a UI: Web interface for data visualization and analysis.
-
-10. Click "Find Traces" to view recorded traces
-
-Trace Analysis: The example creates several types of spans:
-
-1. **create_order_api**
-   - Root span for order creation
-   - Contains order type and customer ID
-
-2. **process_order**
-   - Child span for order processing
-   - Includes order ID and amount
-   - Records processing events
-
-3. **process_payment**
-   - Represents payment processing
-   - Tracks payment amount and method
-   - Records success/failure
-
-4. **update_inventory**
-   - Handles inventory updates
-   - Tracks product ID and quantity
-
-## Best Practices Demonstrated
-
-1. **Proper Span Naming**
-   - Clear, descriptive names
-   - Follows service naming conventions
-
-2. **Error Handling**
-   - Sets appropriate span status
-   - Records exceptions
-   - Maintains error context
-
-3. **Attribute Usage**
-   - Business-relevant attributes
-   - Consistent naming
-   - Appropriate value types
-
-4. **Event Recording**
-   - Meaningful event names
-   - Relevant event attributes
-   - Proper timestamps
-
-5. **Context Propagation**
-   - Automatic HTTP propagation
-   - Maintains trace continuity
-   - Preserves parent-child relationships
+REFERENCE: https://learning.oreilly.com/videos/fundamentals-of-observability/0636920926597/0636920926597-video357736/
 
 
 ## Dynamic Tracing
@@ -307,44 +222,142 @@ lists integrations with many LLMs with APIs, accessed from within Google Colab:
 * Ragas	evaluation framework for your Retrieval Augmented Generation (RAG) pipelines
 * Watsonx (from IBM)
 
+<hr />
 
-## Vendors of Telemetry Utilities
-Common for Telemetry data collection from within apps include:
-OpenTelemetry (OTel, see below), StatsD, and Telegraf.
+<a name="Installation"></a>
 
-Common utilities for monitoring data collection include:
-Prometheus, Nagios, Zabbix, Elastic.
+## Installation
 
-Lightstep is a SaaS observability back-end vendor.
+1. Download: If you did not Fork the repo:
+   ```
+   git clone https://github.com/bomonike/Otel-jaeger && cd Otel-jaeger
+   ```
+3.  Install dependencies:
 
-Common utilities for Observability include:
-Grafana, Jaeger (see below), New Relic, Datadog.
+   ```
+   python3 -m venv venv  # venv is in .gitignore
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-https://last9.io/blog/how-to-use-jaeger-with-opentelemetry/
+   FIXME:
+   ```
+   ERROR: Could not find a version that satisfies the requirement opentelemetry-exporter-jaeger==1.23.0 (from versions: 0.12b0, 0.13b0, 0.14b0, 0.15b0, 0.16b0, 0.16b1, 0.17b0, 1.0.0rc1, 1.0.0, 1.1.0, 1.2.0, 1.3.0, 1.4.0, 1.4.1, 1.5.0, 1.6.0, 1.6.1, 1.6.2, 1.7.0, 1.7.1, 1.8.0, 1.9.0, 1.9.1, 1.10.0, 1.11.0, 1.11.1, 1.12.0rc1, 1.12.0rc2, 1.12.0, 1.13.0, 1.14.0, 1.15.0, 1.16.0, 1.17.0, 1.18.0, 1.19.0, 1.20.0, 1.21.0)
 
+   [notice] A new release of pip is available: 24.2 -> 24.3.1
+   [notice] To update, run: pip install --upgrade pip
+   ERROR: No matching distribution found for opentelemetry-exporter-jaeger==1.23.0
+   ```
+4. Ensure that ports in the command are open.
+   ```
+   docker run -d --name jaeger \
+   -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \
+   -p 5775:5775/udp \
+   -p 6831:6831/udp \
+   -p 6832:6832/udp \
+   -p 5778:5778 \
+   -p 16686:16686 \
+   -p 14250:14250 \
+   -p 14268:14268 \
+   -p 14269:14269 \
+   -p 9411:9411 \
+   jaegertracing/all-in-one:1.22
+   ```
+5. Run the above to start Jaeger (using Docker):
 
-## Telemetry APIs
+   FIXME: 
+   ```
+   Status: Downloaded newer image for jaegertracing/all-in-one:1.22
+   WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+   46d09c080ab6d9b56e74ec8fc64bf90113591dbc1858aee0af9fae6283e16e48
+   ```
 
-New Relic was an early innovator of tracing since the 1990s. They invented a protocol which was proprietary. When other vendors came on the scene, they too provided proprietary API and coding protocols. This made migrations between vendors difficult. Vendor lock-in not only increased costs but also stifled innovation.
+   Jaeger stores trace data in scalable backends like Cassandra or Elasticsearch.
 
-This inspired the creation of two (competing) standards:
+6. Run the application:
+   ```
+   chmod +x app.py
+   python app.py
+   ```
+7. Send a test order:
+   ```
+   curl -X POST http://localhost:5000/order \
+  -H "Content-Type: application/json" \
+  -d '{
+	"order_id": "12345",
+	"amount": 100.00,
+	"customer_id": "cust_123",
+	"product_id": "prod_456",
+	"quantity": 2,
+	"payment_method": "card",
+	"type": "express"
+  }'
+   ```
+8. Check health endpoint:
+   ```
+   curl http://localhost:5000/health
+   ```
 
-OpenTracing in 2015 by the Cloud Native Computing Foundation
-OpenCensus in 2018 by the Google Open Source Community
+9. Open Jaeger UI to view traces:
+   ```
+   openhttp://localhost:16686
+   ```
 
-In 2019, the projects merged into the OpenTelemetry(OTel) project managed by CNCF to define the “best of both worlds”:
+9. Select "order_service" from the Service dropdown
 
-A single standard for obtaining Traces, Metrics, and Logs
-A single set of APIs and language-specific API SDK implementations (Python, Java, .NET, JavaScript, PHP, Go)
+   Jaeger provides a UI: Web interface for data visualization and analysis.
 
-A part of the standard defines how data is instrumented and transmitted:
+10. Click "Find Traces" to view recorded traces
 
-The OpenTelemetry Protocol (OTLP) specification which describes the encoding, transport, and delivery mechanism of telemetry data between telemetry sources, intermediate nodes such as collectors and telemetry backends. See it at https://opentelemetry.io/docs/specs/otlp/ 
+   
+## Trace Analysis
 
-Support for both legacy HTTP and real-time gRPC networking protocols
-Creation of shims or low-level bytecode agents for automatic instrumentation without touching app code
+The example creates several types of spans:
 
-REFERENCE: https://learning.oreilly.com/videos/fundamentals-of-observability/0636920926597/0636920926597-video357736/
+1. **create_order_api**
+   - Root span for order creation
+   - Contains order type and customer ID
+
+2. **process_order**
+   - Child span for order processing
+   - Includes order ID and amount
+   - Records processing events
+
+3. **process_payment**
+   - Represents payment processing
+   - Tracks payment amount and method
+   - Records success/failure
+
+4. **update_inventory**
+   - Handles inventory updates
+   - Tracks product ID and quantity
+
+## Best Practices Demonstrated
+
+1. **Proper Span Naming**
+   - Clear, descriptive names
+   - Follows service naming conventions
+
+2. **Error Handling**
+   - Sets appropriate span status
+   - Records exceptions
+   - Maintains error context
+
+3. **Attribute Usage**
+   - Business-relevant attributes
+   - Consistent naming
+   - Appropriate value types
+
+4. **Event Recording**
+   - Meaningful event names
+   - Relevant event attributes
+   - Proper timestamps
+
+5. **Context Propagation**
+   - Automatic HTTP propagation
+   - Maintains trace continuity
+   - Preserves parent-child relationships
+
 
 ### Telemetry Event JSON
 
