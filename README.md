@@ -1,6 +1,8 @@
-Here is a sample implementation of a telemetry system using open-source components.
+---
+Last change: "v004 + header :README.md"
+---
 
-Last change: "v003 + bindplane :README.md"
+Here at <a target="_blank" href="https://github.com/bomonike/telemetry/"> https://github.com/bomonike/telemetry/</a> is an enterprise-level implementation of a telemetry system.
 
 Telemetry is the process of collecting and transmitting “raw” data (as signals from remote sources).
 
@@ -16,17 +18,15 @@ Not shown in this example are:
 * Internal conditions such as power output from battery, battery life remaining, wheel grip (wear level on wheels)
 * Alerts and Troubleshooting using Logs, Metrics, Traces
 
-## This repo
+REFERENCES: “Telemetry” is not a topic listed per se in Arvix.org. However, related topics in Computer Science are: Databases, Performance, Numerical Analysis, Systems and Control, etc.
+
+## System components
 
 This repo was created so that a full-featured system for collecting and analyzing telemetry events can be established quickly and reliably. For example:
 
    * Telemetry from robots running ROS2
    * Telemetry from wrist bands built from a micro:bit
-
-REFERENCES: “Telemetry” is not a topic listed per se in Arvix.org. However, related topics in Computer Science are: Databases, Performance, Numerical Analysis, Systems and Control, etc.
-
-## System components
-
+W
 <img alt="telemetry-flow-604x405.png" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1732092138/telemetry-flow-604x405_sgbxsm.png" />
 
 Open source services are used:
@@ -35,7 +35,7 @@ Open source services are used:
 * Metrics are sent to the Prometheus collector
 * Traces containing OpenTelemetry (OTel) instrumentation emitted from a sample Python programs are sent to a Jaeger collector
 
-Since handling and storing emissions from every activity at high volume can be very costly, a cloud-based <a target="_blank" href="https://observiq.com/">observiq.com</a> can be the initial capture point to filter data in a dynamic, intelligent way before forwarding them.
+Since handling and storing emissions from every activity at high volume can be very costly, a cloud-based <a target="_blank" href="https://observiq.com/">observiq.com</a> can be the initial capture point to filter and consolidate data (as well as remove security issues) in a dynamic, intelligent way before forwarding them.
 <img alt="telemetry-bindplane.png" src="https://res.cloudinary.com/dcajqrroq/image/upload/v1732138027/telemetry-bindplane_cwn96y.webp" />
 
 <hr />
